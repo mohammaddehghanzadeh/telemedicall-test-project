@@ -27,7 +27,7 @@ class EventIndexRequest extends FormRequest
             'location' => 'nullable|string|max:255', // Optional, valid string with max length of 255
             'keyword' => 'nullable|string|max:255', // Optional, valid string with max length of 255
             'page' => 'nullable|integer|min:1', // Optional, integer, greater than or equal to 1
-            'per_page' => 'nullable|integer|min:1|max:100', // Optional, integer between 1 and 100
+            'perPage' => 'nullable|integer|min:1|max:100', // Optional, integer between 1 and 100
         ];
     }
 

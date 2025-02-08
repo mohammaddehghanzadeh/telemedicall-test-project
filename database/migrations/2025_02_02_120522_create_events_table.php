@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('events', function (Blueprint $table) {
             $table->id(); // Auto-incrementing primary key
             $table->unsignedBigInteger('user_id');  // Adding user_id as foreign key
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');  // Setting up foreign key constraint
             $table->string('title'); // Event title
             $table->text('description'); // Event description
             $table->dateTime('start_time'); // Event start time (date and time)

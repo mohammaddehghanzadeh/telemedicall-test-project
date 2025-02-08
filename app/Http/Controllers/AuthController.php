@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Models\User;
+use App\services\UserService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -12,49 +13,18 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
+    protected $userService;
+    public function __construct(UserService $userService)
+    {
+        $this->userService = $userService;
+    }
     public function register(RegisterRequest $request)
     {
-
-        $user = User::query()->create([
-            'name' => $request->get('name'),
-            'email' => $request->get('email'),
-            'password' => bcrypt($request->get('password')),
-        ]);
-
-        if ($user) {
-            $token = $user->createToken('auth_token')->plainTextToken;
-            return response()->json([
-                'message' => 'Register successfully',
-                'token' => $token,
-            ]);
-        }else{
-            return response()->json([
-                'message' => 'Register Failed',
-            ]);
-        }
+        return $this->userService->registerUser($request->validated());
     }
 
     public function login(LoginRequest $request)
     {
-
-        try {
-            $user = User::where('email', $request->email)->firstOrFail();
-
-            if (Hash::check($request->password, $user->password)) {
-                Auth::login($user);
-                $user->tokens()->delete();
-                $token = $user->createToken('auth_token')->plainTextToken;
-                return response()->json([
-                    'message' => 'Login successfully',
-                    'token' => $token,
-                ]);
-            }
-
-            return response()->json(['message' => 'Unauthorized'], 401);
-
-        } catch (ModelNotFoundException $e) {
-            return response()->json(['message' => 'Unauthorized'], 401);
-        }
-
+        return $this->userService->loginUser($request->validated());
     }
 }
